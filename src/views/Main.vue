@@ -100,7 +100,6 @@ export default {
                 // margin-bottom: 20px;
                 color: #666;
             }
-
         }
 
         .content {
@@ -112,10 +111,7 @@ export default {
             }
         }
     }
-
 }
-
-
 .el-carousel__item {
 
     // 轮播图图片铺满背景
