@@ -41,8 +41,7 @@ import {
   CascaderPanel,
   Loading,
   MessageBox,
-  Message,
-  Notification
+  Message
 } from 'element-ui';
 
 
