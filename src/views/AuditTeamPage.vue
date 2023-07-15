@@ -193,7 +193,7 @@ export default {
                         that.showTeacher = response.teamInfo.teachers.length > 0;
                         that.showAchievement = response.teamInfo.achievements.length > 0;
                     }).catch(function (error) {
-                        console.log("teamInfoByTeamId出错了")
+                        console.log("teamInfoByTeamId出错了", error)
                     })
             }
         },

@@ -362,14 +362,14 @@ export default {
         // 荣誉图片上传成功
         handleHonorUploadSuccess(response, file, fileList, index) {
             this.form.honorItems[index].url = response.url
-            return response => {
+            // return response => {
                 this.$message({
                     duration: 1000,
                     showClose: true,
                     message: '上传内容图片成功',
                     type: 'success'
                 })
-            }
+            // }
         },
         // 荣誉图片上传错误
         handleHonorUploadError() {

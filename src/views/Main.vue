@@ -20,9 +20,6 @@
                     <p class="text">
                         获取相关资料和知识，与其他竞赛爱好者交流互动，提升自己的竞赛能力和素质。
                     </p>
-                    <p class="text">
-                        我们的团队由一群热爱学科竞赛的年轻人组成，拥有丰富的竞赛经验和技能。
-                    </p>
                     <p class="text">我们将竭诚为您提供全面、高效、贴心的服务，让您在学科竞赛的道路上更加顺畅。</p>
                 </div>
             </div>
@@ -106,7 +103,7 @@ export default {
             .text {
                 font-size: 20px;
                 line-height: 1.8;
-                // margin-bottom: 40px;
+                 margin-bottom: 40px;
                 color: #333;
             }
         }

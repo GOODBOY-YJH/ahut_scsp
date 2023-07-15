@@ -33,24 +33,24 @@ export default {
     // 设置了最小窗口宽度，这里不用监听了
     
     // 监听窗口大小，小于一定值的时候，导航栏消失
-    // listeningWindow() {
-    //   // console.log(window.innerWidth);
-    //   if (window.innerWidth < 800) {
-    //     this.headerShow = false;
-    //   } else {
-    //     this.headerShow = true;
-    //   }
-    // }
+    listeningWindow() {
+      // console.log(window.innerWidth);
+      if (window.innerWidth < 800) {
+        this.headerShow = false;
+      } else {
+        this.headerShow = true;
+      }
+    }
   },
-  // mounted() {
-  //   //注册监听
-  //   window.addEventListener('resize', this.listeningWindow)
-  //   this.listeningWindow()
-  // },
-  // destroyed() {
-  //   //移除监听
-  //   window.removeEventListener('resize', this.listeningWindow)
-  // }
+  mounted() {
+    //注册监听
+    window.addEventListener('resize', this.listeningWindow)
+    this.listeningWindow()
+  },
+  destroyed() {
+    //移除监听
+    window.removeEventListener('resize', this.listeningWindow)
+  }
 
 }
 </script>
@@ -63,7 +63,7 @@ export default {
 
 .el-container {
   .el-header {
-    min-width: 1300px;
+    //min-width: 1300px;
     position: fixed;
     top: 0;
     width: 100%;
@@ -72,7 +72,7 @@ export default {
   }
 
   .el-main {
-    min-width: 1300px;
+    //min-width: 1300px;
     padding: 0;
     z-index: 2;
     min-height: 650px;
@@ -98,7 +98,7 @@ export default {
     }
   }
   .el-footer{
-    min-width: 1300px;
+    //min-width: 1300px;
     padding: 0;
   }
 }

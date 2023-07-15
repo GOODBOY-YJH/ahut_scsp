@@ -1,6 +1,14 @@
 <template>
     <div class="userManager">
         <h3 class="title">用户列表</h3>
+        <div class="search-filters">
+            <div class="search-input">
+                <el-input v-model="keyword" placeholder="请输入关键词" suffix-icon="el-icon-search" @keyup.enter.native="searchUserLisByPage" @clear="searchUserLisByPage"
+                    :clearable="true">
+                </el-input>
+            </div>
+            <el-button type="primary" @click="searchUserLisByPage" icon="el-icon-search">搜索</el-button>
+        </div>
         <el-table :data="users" style="width: 100%">
             <el-table-column label="用户名" width="auto">
                 <template slot-scope="scope">
@@ -39,6 +47,7 @@ export default {
             userAdmin: false,
             pageIndex: 1,
             pageSize: 8,
+            keyword: '',
             totalCount: 0,
             users: [
                 // {
@@ -144,10 +153,14 @@ export default {
         },
         searchUserLisByPage() {
             let that = this
-            that.$ajax.post('/user/searchUserListByPage', {
+            let data = {
                 page: that.pageIndex,
                 length: that.pageSize,
-            }).then(function (response) {
+            }
+            if (that.keyword !== '' && that.keyword != null) {
+                data.keyword = that.keyword
+            }
+            that.$ajax.post('/user/searchUserListByPage', data).then(function (response) {
                 that.users = response.page.list.filter(item => item.id != that.userId)
                 that.totalCount = response.page.totalCount
             }).catch(function (error) {
@@ -197,8 +210,54 @@ export default {
 .userManager {
     width: 80%;
     margin: 0 auto;
-    margin-top: 60px;
+    margin-top: 80px;
     text-align: center;
+
+    .search-filters {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+
+        .search-input {
+            flex: 1;
+            // margin-left: 50px;
+        }
+
+        .el-select {
+            width: 120px;
+            margin-right: 16px;
+        }
+
+        .el-input__inner {
+            border: none;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .el-input__suffix {
+            font-size: 20px;
+        }
+
+        .el-button {
+            border: none;
+            border-radius: 4px;
+            background-color: #409eff;
+            color: #fff;
+            font-size: 14px;
+            height: 38px;
+            padding: 0 16px;
+        }
+
+        .block {
+            .el-pagination {
+                background-color: rgb(0, 0, 0, 0);
+            }
+
+            // opacity: 1;
+        }
+    }
 
     .title {
         margin-bottom: 10px;

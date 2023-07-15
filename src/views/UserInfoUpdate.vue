@@ -3,16 +3,16 @@
     <div slot="header" class="card-header">
       <span>个人信息</span>
     </div>
-    <el-form :model="form" label-width="100px">
+    <el-form :model="form" ref="form" :rules="rules" label-width="100px">
       <el-form-item label="上传头像" prop="avatar">
         <el-upload ref="upload" list-type="picture-card" :action="avatarUrl" :show-file-list="true"
-          :class="{ hide: haveImage }" :file-list="form.avatar" :before-upload="beforeCoverUpload"
-          :on-success="handleCoverUploadSuccess" :on-remove="handleCoverRemove" :on-error="handleCoverUploadError"
+          :class="{ hide: haveImage }" :file-list="form.avatar" :before-upload="beforeAvatarUpload"
+          :on-success="handleAvatarUploadSuccess" :on-remove="handleAvatarRemove" :on-error="handleAvatarUploadError"
           :headers="headers">
           <i class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
-      <el-form-item label="昵称">
+      <el-form-item label="账号">
         <el-input v-model="form.name"></el-input>
       </el-form-item>
       <el-form-item label="性别">
@@ -24,13 +24,13 @@
         <el-date-picker v-model="form.birthday" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="邮箱">
+      <el-form-item label="邮箱" prop="email">
         <el-input v-model="form.email"></el-input>
       </el-form-item>
       <el-form-item label="地址">
         <el-input v-model="form.address"></el-input>
       </el-form-item>
-      <el-form-item label="电话号码">
+      <el-form-item label="电话号码" prop="phoneNumber">
         <el-input v-model="form.phoneNumber"></el-input>
       </el-form-item>
       <el-form-item class="button_center">
@@ -62,6 +62,7 @@ export default {
       isLogin: false,
       haveImage: false,
       genders: ['男', '女', '其他'],
+      // 表单
       form: {
         name: '',
         avatar: [],
@@ -73,48 +74,63 @@ export default {
       },
       // 表单验证规则
       rules: {
-        name: [{ required: true, message: '请上传封面', trigger: 'blur' }],
-        gender: [{ required: true, message: '请输入标题', trigger: 'blur' }]
+        avatar: [{ required: true, message: '请上传头像', trigger: 'blur' }],
+        name: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+        gender: [{ required: true, message: '请输入标题', trigger: 'blur' }],
+        email:[{pattern:'^[A-Za-z0-9]+([_\.][A-Za-z0-9]+)*@([A-Za-z0-9\-]+\.)+[A-Za-z]{2,6}$', message: '邮箱格式不对', trigger:'blur'}],
+        phoneNumber:[{pattern: '1[3-9]\\d{9}', message: '手机号码格式不对', trigger:'blur'}]
       },
     };
   },
   methods: {
     submitForm() {
       let that = this
-      let data = {
-        userId: this.userId,
-        name: that.form.name,
-        avatar: that.form.avatar[0].url,
-        gender: that.form.gender,
-        birthday: that.form.birthday,
-        email: that.form.email,
-        address: that.form.address,
-        phoneNumber: that.form.phoneNumber
-      }
-      console.log(data)
-      that.$ajax.post('/user/updateUserInfo', data)
-        .then(function (response) {
-          if (response.rows) {
-            that.$message({
-              duration: 1000,
-              showClose: true,
-              message: '更新成功',
-              type: 'success'
-            })
-            that.$router.go(-1);
-          } else {
-            that.$message({
-              duration: 1000,
-              showClose: true,
-              message: '更新失败',
-              type: 'error'
-            })
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          let data = {
+            userId: this.userId,
+            name: that.form.name,
+            avatar: that.form.avatar[0].url,
+            gender: that.form.gender,
+            birthday: that.form.birthday,
+            email: that.form.email,
+            address: that.form.address,
+            phoneNumber: that.form.phoneNumber
           }
-        }).catch(function (error) {
-          console.log(error)
-        })
+          // console.log(data)
+          that.$ajax.post('/user/updateUserInfo', data)
+            .then(function (response) {
+              if (response.code == 200 && response.rows > 0) {
+                that.$message({
+                  duration: 1000,
+                  showClose: true,
+                  message: '更新成功',
+                  type: 'success'
+                })
+                that.$router.go(-1);
+              } else {
+                that.$message({
+                  duration: 1000,
+                  showClose: true,
+                  message: '更新失败,' + response.message,
+                  type: 'error'
+                })
+              }
+            }).catch(function (error) {
+              console.log(error)
+            })
+        } else {
+          that.$message({
+            duration: 1000,
+            showClose: true,
+            message: '表单验证失败',
+            type: 'error'
+          })
+          return false
+        }
+      })
     },
-    beforeCoverUpload(file) {
+    beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'
       const isPNG = file.type === 'image/png'
       const isLt4M = file.size / 1024 / 1024 < 4
@@ -123,7 +139,7 @@ export default {
         this.$message({
           duration: 1000,
           showClose: true,
-          message: '上传封面只能是 JPG/PNG 格式!',
+          message: '上传头像只能是 JPG/PNG 格式!',
           type: 'error'
         })
         return false
@@ -132,34 +148,34 @@ export default {
         this.$message({
           duration: 1000,
           showClose: true,
-          message: '上传封面大小不能超过 4MB!',
+          message: '上传头像大小不能超过 4MB!',
           type: 'error'
         })
         return false
       }
       return true
     },
-    // 封面图片上传成功
-    handleCoverUploadSuccess(response, file, fileList) {
+    // 头像图片上传成功
+    handleAvatarUploadSuccess(response, file, fileList) {
       this.form.avatar.push({ url: response.url })
       this.$message({
         duration: 1000,
         showClose: true,
-        message: '上传封面成功',
+        message: '上传头像成功',
         type: 'success'
       })
       this.haveImage = true
     },
 
-    // 封面图片删除
-    handleCoverRemove(file, fileList) {
+    // 头像图片删除
+    handleAvatarRemove(file, fileList) {
       let that = this
       let url = file.response ? file.response.url : file.url
       console.log(url)
       that.$ajax.post('/cos/deleteCosFile', {
         pathes: [url.split("\.com")[1]]
       }).then(function (response) {
-        // 移除表单里的cover图片
+        // 移除表单里的avatar图片
         that.form.avatar = that.form.avatar = []
         that.$message({
           duration: 1000,
@@ -177,12 +193,12 @@ export default {
       })
       that.haveImage = false
     },
-    // 封面图片上传错误
-    handleCoverUploadError() {
+    // 头像图片上传错误
+    handleAvatarUploadError() {
       this.$message({
         duration: 1000,
         showClose: true,
-        message: '上传封面失败',
+        message: '上传头像失败',
         type: 'error'
       })
     },
@@ -226,7 +242,8 @@ export default {
         that.form.address = response.user.address
         that.form.phoneNumber = response.user.phoneNumber
       }).catch(function (error) {
-        console.log("这个错误, 暂时不知道怎么提醒")
+        console.log(error)
+        // console.log("这个错误, 暂时不知道怎么提醒")
       })
   }
 };

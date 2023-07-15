@@ -140,7 +140,7 @@ export default {
     align-items: center;
     height: 100vh;
     // 背景图片以及透明度
-    background-image: url(../assets/image/ahut_3.jpg);
+    background-image: url(../assets/image/ahut_2.jpg);
     background-size: 100% 100%;
     background-repeat: no-repeat;
     opacity: 0.9;

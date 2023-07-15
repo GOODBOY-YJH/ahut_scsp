@@ -28,8 +28,10 @@ export default {
                 repeatPassword: ''
             },
             registerFormRules: {
-                password: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
-                repeatPassword: [{ required: true, message: '请再次输入密码', trigger: 'blur' }]
+                password: [{ required: true, message: '请输入新密码', trigger: 'blur' },
+                { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }],
+                repeatPassword: [{ required: true, message: '请再次输入密码', trigger: 'blur' },
+                { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }]
             },
         };
     },

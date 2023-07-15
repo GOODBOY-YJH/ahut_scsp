@@ -46,7 +46,7 @@ export default {
 <style lang="less" scoped>
 .app {
   background-color: rgb(240, 247, 255);
-  min-width: 1300px;
+  //min-width: 1300px;
 
   // 路由切换动画
   .slide-left-enter {

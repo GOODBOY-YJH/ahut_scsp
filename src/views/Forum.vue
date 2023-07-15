@@ -13,6 +13,8 @@
                         </el-input>
                     </div>
                     <el-button type="primary" @click="search" icon="el-icon-search">搜索</el-button>
+                    <el-button v-if="userId && userId > 0" v-show="!isMe" type="primary" @click="toMePost">我的帖子</el-button>
+                    <el-button v-if="userId && userId > 0" v-show="isMe" type="primary" @click="toMePost">全部帖子</el-button>
                 </div>
             </div>
         </div>
@@ -39,7 +41,7 @@
         <div class="block">
             <!-- <span class="demonstration">页数较少时的效果</span> -->
             <el-pagination background layout="prev, pager, next" :page-size="pageSize" :total="totalCount"
-                @current-change="currentChange" :hide-on-single-page="true">
+                @current-change="currentChange" :current-page.sync="page" :hide-on-single-page="true">
             </el-pagination>
         </div>
         <div @click="addPost()" class="post-put">
@@ -57,6 +59,8 @@ export default {
     data() {
         return {
             isLogin: false,
+            userId: -1,
+            isMe: false,
             keyword: '',
             sortType: '',
             teamTypes: ["按时间排序", "按热度排序"],
@@ -92,6 +96,11 @@ export default {
         search() {
             this.searchPostByPage();
         },
+        toMePost(){
+          this.isMe = !this.isMe
+          this.page = 1
+          this.searchPostByPage();
+        },
         searchPostByPage() {
             let that = this
 
@@ -105,20 +114,19 @@ export default {
                 type = 'time'
             }
             let data = {
-                page: this.page,
-                length: this.pageSize,
-                keyword: this.keyword,
-                sortType: type,
+              page: this.page,
+              length: this.pageSize,
+              keyword: this.keyword,
+              sortType: type,
+              isMe : this.isMe
             }
-
             that.$ajax.post('/post/searchPostByPage', data)
                 .then(function (response) {
                     that.posts = response.page.list
                     that.totalCount = response.page.totalCount
                 }).catch(function (error) {
-                    console.log("出错了")
+                    console.log("出错了", error)
                 })
-
         },
         toPost(id) {
             this.$router.push({
@@ -155,7 +163,7 @@ export default {
                         .then(function (response) {
                             post.likes = response.likes
                         }).catch(function (error) {
-                            console.log("点赞失败")
+                            console.log("点赞失败", error)
                         })
                 } else {
                     that.$message({
@@ -189,15 +197,16 @@ export default {
         that.$ajax.get('/user/isLogin')
             .then(function (response) {
                 that.isLogin = response.login
+                that.userId = response.userId
             }).catch(function (error) {
                 that.isLogin = false
+                console.log(error)
             })
         // 检查是否登陆，标志登陆
         // console.log('beforeMount')
     },
     mounted() {
         this.searchPostByPage();
-
     }
 };
 </script>

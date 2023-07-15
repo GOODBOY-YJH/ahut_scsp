@@ -223,6 +223,7 @@ export default {
                     .then(function (response) {
                         that.teamInfo = response.teamInfo
                         that.teamUserd = response.teamInfo.teamUserd
+                        // 指导教师和荣誉奖项的布局
                         that.showFlex = (that.teamInfo.teachers.length < 4 && that.teamInfo.achievements.length < 4)
                         that.showTeacher = response.teamInfo.teachers.length > 0;
                         that.showAchievement = response.teamInfo.achievements.length > 0;

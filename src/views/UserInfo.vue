@@ -9,7 +9,7 @@
       </div>
       <div class="info-list">
         <el-row class="info-row">
-          <el-col :span="6" class="info-label">昵称：</el-col>
+          <el-col :span="6" class="info-label">账号：</el-col>
           <el-col :span="18">{{ username }}</el-col>
         </el-row>
         <el-row class="info-row">
